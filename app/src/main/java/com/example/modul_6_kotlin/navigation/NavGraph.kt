@@ -5,52 +5,52 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.modul_6_kotlin.data.repository.PhotoRepositoryImpl
-import com.example.modul_6_kotlin.domain.usecase.GetPhotosUseCase
-import com.example.modul_6_kotlin.presentation.ui.screen.PhotoDetailScreen
-import com.example.modul_6_kotlin.presentation.ui.screen.PhotoListScreen
-import com.example.modul_6_kotlin.presentation.viewmodel.PhotoUiState
-import com.example.modul_6_kotlin.presentation.viewmodel.PhotoViewModel
-import com.example.modul_6_kotlin.presentation.viewmodel.PhotoViewModelFactory
+import com.example.modul_6_kotlin.data.repository.NobelRepositoryImpl
+import com.example.modul_6_kotlin.domain.usecase.GetNobelPrizesUseCase
+import com.example.modul_6_kotlin.presentation.ui.screen.NobelDetailScreen
+import com.example.modul_6_kotlin.presentation.ui.screen.NobelListScreen
+import com.example.modul_6_kotlin.presentation.viewmodel.NobelUiState
+import com.example.modul_6_kotlin.presentation.viewmodel.NobelViewModel
+import com.example.modul_6_kotlin.presentation.viewmodel.NobelViewModelFactory
 
 
 @Composable
 fun NavGraph(){
     val navController = rememberNavController()
 
-    // Создаем UseCase
-    val repository = PhotoRepositoryImpl()
-    val getPhotosUseCase = GetPhotosUseCase(repository)
+    val repository = NobelRepositoryImpl()
+    val getNobelPrizesUseCase = GetNobelPrizesUseCase(repository)
 
-    val viewModel: PhotoViewModel = viewModel(
-        factory = PhotoViewModelFactory(getPhotosUseCase)
+    val viewModel: NobelViewModel = viewModel(
+        factory = NobelViewModelFactory(getNobelPrizesUseCase)
     )
 
     NavHost(
         navController = navController,
-        startDestination = "photo_list"
+        startDestination = "nobel_list"
     ) {
-        composable("photo_list") {
-            PhotoListScreen(
+        composable("nobel_list") {
+            NobelListScreen(
                 viewModel = viewModel,
-                onPhotoClick = { photo ->
-                    navController.navigate("photo_detail/${photo.id}")
+                onPrizeClick = { prize ->
+                    navController.navigate("nobel_detail/${prize.awardYear}_${prize.category}")
                 }
             )
         }
-        composable("photo_detail/{photoId}") { backStackEntry ->
-            val photoId = backStackEntry.arguments?.getString("photoId") ?: ""
-            // Получаем фото из ViewModel
-            val photo = viewModel.uiState.value.let { state ->
-                if (state is PhotoUiState.Success) {
-                    state.photos.find { it.id == photoId }
-                } else null
+
+        composable("nobel_detail/{prizeKey}") { backStackEntry ->
+            val prizeKey = backStackEntry.arguments?.getString("prizeKey") ?: ""
+            val prize = when (val state = viewModel.uiState.value) {
+                is NobelUiState.Success -> state.prizes.find {
+                    "${it.awardYear}_${it.category}" == prizeKey
+                }
+                else -> null
             }
-            PhotoDetailScreen(
-                photo = photo,
-                viewModel = viewModel,  // ← это было пропущено
+            NobelDetailScreen(
+                prize = prize,
                 onBack = { navController.popBackStack() }
             )
         }
+
     }
 }

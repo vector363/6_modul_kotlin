@@ -12,21 +12,21 @@ import com.example.modul_6_kotlin.navigation.NavGraph
 import com.example.modul_6_kotlin.ui.theme.Modul_6_KotlinTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
 
         setContent {
             Modul_6_KotlinTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                )
-                {
+                ) {
                     NavGraph()
                 }
             }
         }
     }
 }
+

@@ -1,56 +1,108 @@
 package com.example.modul_6_kotlin.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.modul_6_kotlin.data.repository.NobelRepositoryImpl
-import com.example.modul_6_kotlin.domain.usecase.GetNobelPrizesUseCase
-import com.example.modul_6_kotlin.presentation.ui.screen.NobelDetailScreen
-import com.example.modul_6_kotlin.presentation.ui.screen.NobelListScreen
-import com.example.modul_6_kotlin.presentation.viewmodel.NobelUiState
-import com.example.modul_6_kotlin.presentation.viewmodel.NobelViewModel
-import com.example.modul_6_kotlin.presentation.viewmodel.NobelViewModelFactory
+import androidx.navigation.navArgument
+import com.example.modul_6_kotlin.AuthApplication
+import com.example.modul_6_kotlin.domain.model.User
+import com.example.modul_6_kotlin.data.repository.AuthRepositoryImpl
+import com.example.modul_6_kotlin.domain.usecase.GetUserDetailUseCase
+import com.example.modul_6_kotlin.domain.usecase.GetUsersUseCase
+import com.example.modul_6_kotlin.domain.usecase.LoginUseCase
+import com.example.modul_6_kotlin.domain.usecase.LogoutUseCase
+import com.example.modul_6_kotlin.presentation.ui.screen.LoginScreen
+import com.example.modul_6_kotlin.presentation.ui.screen.UserDetailScreen
+import com.example.modul_6_kotlin.presentation.ui.screen.UsersListScreen
+import com.example.modul_6_kotlin.presentation.viewmodel.LoginViewModel
+import com.example.modul_6_kotlin.presentation.viewmodel.LoginViewModelFactory
+import com.example.modul_6_kotlin.presentation.viewmodel.UsersViewModel
+import com.example.modul_6_kotlin.presentation.viewmodel.UsersViewModelFactory
 
 
 @Composable
-fun NavGraph(){
+fun NavGraph() {
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val application = context.applicationContext as AuthApplication
+    val tokenManager = application.tokenManager
 
-    val repository = NobelRepositoryImpl()
-    val getNobelPrizesUseCase = GetNobelPrizesUseCase(repository)
+    // Создаем репозиторий и use cases
+    val repository = AuthRepositoryImpl(tokenManager)
+    val loginUseCase = LoginUseCase(repository)
+    val getUsersUseCase = GetUsersUseCase(repository)
+    val getUserDetailUseCase = GetUserDetailUseCase(repository)
+    val logoutUseCase = LogoutUseCase(repository)
 
-    val viewModel: NobelViewModel = viewModel(
-        factory = NobelViewModelFactory(getNobelPrizesUseCase)
-    )
+    // Проверяем, авторизован ли пользователь
+    val isAuthenticated = remember { repository.isAuthenticated() }
+    val startDestination = if (isAuthenticated) "users_list" else "login"
+
 
     NavHost(
         navController = navController,
-        startDestination = "nobel_list"
+        startDestination = startDestination
     ) {
-        composable("nobel_list") {
-            NobelListScreen(
+        // Экран логина
+        composable("login") {
+            val viewModel: LoginViewModel = viewModel(
+                factory = LoginViewModelFactory(loginUseCase)
+            )
+            LoginScreen(
                 viewModel = viewModel,
-                onPrizeClick = { prize ->
-                    navController.navigate("nobel_detail/${prize.awardYear}_${prize.category}")
+                onLoginSuccess = {
+                    navController.navigate("users_list") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
             )
         }
 
-        composable("nobel_detail/{prizeKey}") { backStackEntry ->
-            val prizeKey = backStackEntry.arguments?.getString("prizeKey") ?: ""
-            val prize = when (val state = viewModel.uiState.value) {
-                is NobelUiState.Success -> state.prizes.find {
-                    "${it.awardYear}_${it.category}" == prizeKey
+        // Экран списка пользователей
+        composable("users_list") {
+            val viewModel: UsersViewModel = viewModel(
+                factory = UsersViewModelFactory(
+                    getUsersUseCase,
+                    getUserDetailUseCase,
+                    logoutUseCase
+                )
+            )
+            UsersListScreen(
+                viewModel = viewModel,
+                onUserClick = { user: User ->
+                    navController.navigate("user_detail/${user.id}")
+                },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("users_list") { inclusive = true }
+                    }
                 }
-                else -> null
-            }
-            NobelDetailScreen(
-                prize = prize,
+            )
+        }
+
+        // Экран детализации пользователя
+        composable(
+            route = "user_detail/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            val viewModel: UsersViewModel = viewModel(
+                factory = UsersViewModelFactory(
+                    getUsersUseCase,
+                    getUserDetailUseCase,
+                    logoutUseCase
+                )
+            )
+            UserDetailScreen(
+                userId = userId,
+                viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
-
     }
 }

@@ -7,38 +7,23 @@ object NobelPrizeMapper {
 
     fun mapToDomain(dto: NobelPrizeDto): NobelPrize {
         return NobelPrize(
-            awardYear = dto.awardYear,
-            category = dto.category.en ?: "Unknown",
+            id = dto.id,
+            awardYear = dto.year,
+            category = dto.category,
             dateAwarded = dto.dateAwarded,
             prizeAmount = dto.prizeAmount,
-            laureates = dto.laureates?.map { mapLaureateToDomain(it) } ?: emptyList()
+            laureates = dto.laureates.map { mapLaureateToDomain(it) }
         )
     }
 
     fun mapLaureateToDomain(dto: LaureateDto): Laureate {
-        // Получаем имя (приоритет: fullName, knownName, orgName)
-        val name = when {
-            dto.fullName?.en != null -> dto.fullName.en
-            dto.knownName?.en != null -> dto.knownName.en
-            dto.orgName?.en != null -> dto.orgName.en
-            else -> "Unknown"
-        }
-
-        // Получаем мотивацию
-        val motivation = dto.motivation?.en ?: "Нет описания"
-
-        // Формируем место рождения
-        val birthPlace = dto.birth?.place?.let {
-            listOfNotNull(it.city, it.country).joinToString(", ")
-        } ?: "Не указано"
-
         return Laureate(
             id = dto.id,
-            fullName = name,
-            motivation = motivation,
-            birthDate = dto.birth?.date,
-            birthPlace = birthPlace,
-            portion = dto.portion
+            fullName = dto.fullName,
+            motivation = dto.motivation,
+            portion = dto.portion,  // теперь может быть null
+            birthDate = dto.birthDate,
+            birthPlace = dto.birthPlace
         )
     }
 

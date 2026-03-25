@@ -1,27 +1,53 @@
 package com.example.modul_6_kotlin.data.api
 
-import com.example.modul_6_kotlin.data.remote.NobelPrizeResponse
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.parameter
+import com.example.modul_6_kotlin.data.remote.LaureateDto
+import com.example.modul_6_kotlin.data.remote.LoginRequestDto
+import com.example.modul_6_kotlin.data.remote.LoginResponseDto
+import com.example.modul_6_kotlin.data.remote.NobelPrizeDto
+import com.example.modul_6_kotlin.data.remote.RegisterRequestDto
+import retrofit2.http.*
 
-class NobelApiService(
-    private val client: HttpClient,
-    private val baseUrl: String
-) {
 
-    suspend fun getNobelPrizes(
-        limit: Int = 25,
-        offset: Int = 0,
-        year: String? = null,
-        category: String? = null
-    ): NobelPrizeResponse {
-        return client.get("${baseUrl}nobelPrizes") {
-            parameter("limit", limit)
-            parameter("offset", offset)
-            year?.let { parameter("nobelPrizeYear", it) }
-            category?.let { parameter("nobelPrizeCategory", it) }
-        }.body()
-    }
+interface NobelApiService {
+
+    // Авторизация
+    @POST("auth/login")
+    suspend fun login(
+        @Body request: LoginRequestDto
+    ): LoginResponseDto
+
+    @POST("auth/register")
+    suspend fun register(
+        @Body request: RegisterRequestDto
+    ): LoginResponseDto
+
+    // Премии (защищенные)
+    @GET("prizes")
+    suspend fun getAllPrizes(): List<NobelPrizeDto>
+
+    @GET("prizes/{year}/{category}")
+    suspend fun getPrizeByYearAndCategory(
+        @Path("year") year: String,
+        @Path("category") category: String
+    ): NobelPrizeDto
+
+    @GET("prizes/{year}/{category}/laureates")
+    suspend fun getLaureatesByPrize(
+        @Path("year") year: String,
+        @Path("category") category: String
+    ): List<LaureateDto>
+
+    // Избранное
+    @GET("users/me/prizes")
+    suspend fun getUserFavorites(): List<NobelPrizeDto>
+
+    @POST("users/me/prizes/{prizeId}")
+    suspend fun addToFavorites(
+        @Path("prizeId") prizeId: Int
+    ): Map<String, String>
+
+    @DELETE("users/me/prizes/{prizeId}")
+    suspend fun removeFromFavorites(
+        @Path("prizeId") prizeId: Int
+    ): Map<String, String>
 }

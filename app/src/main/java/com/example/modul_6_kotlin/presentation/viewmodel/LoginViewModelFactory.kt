@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.modul_6_kotlin.domain.repository.AuthRepository
 
-class NobelViewModelFactory(
+class LoginViewModelFactory(
     private val authRepository: AuthRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NobelViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NobelViewModel(authRepository) as T
+            return LoginViewModel(authRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

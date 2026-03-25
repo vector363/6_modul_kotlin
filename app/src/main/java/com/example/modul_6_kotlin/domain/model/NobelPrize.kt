@@ -1,6 +1,7 @@
 package com.example.modul_6_kotlin.domain.model
 
 data class NobelPrize(
+    val id: Int,
     val awardYear: String,
     val category: String,
     val dateAwarded: String?,
@@ -14,5 +15,5 @@ data class Laureate(
     val motivation: String,
     val birthDate: String?,
     val birthPlace: String?,
-    val portion: String
+    val portion: String?
 )

@@ -13,13 +13,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.modul_6_kotlin.domain.model.NobelPrize
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.modul_6_kotlin.presentation.viewmodel.FavoriteActionState
+import com.example.modul_6_kotlin.presentation.viewmodel.NobelViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NobelDetailScreen(
     prize: NobelPrize?,
+    viewModel: NobelViewModel,
     onBack: () -> Unit
 ) {
+    val favoriteState by viewModel.favoriteState.collectAsStateWithLifecycle()
+    val isFavorite = prize?.let { viewModel.isFavorite(it.id) } ?: false
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -30,6 +41,20 @@ fun NobelDetailScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
                         )
+                    }
+                },
+                actions = {
+                    if (prize != null) {
+                        IconButton(
+                            onClick = { viewModel.toggleFavorite(prize) },
+                            enabled = favoriteState !is FavoriteActionState.Loading
+                        ) {
+                            Icon(
+                                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = if (isFavorite) "Удалить из избранного" else "Добавить в избранное",
+                                tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
                 }
             )
@@ -52,7 +77,6 @@ fun NobelDetailScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Основная информация о премии
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -91,16 +115,14 @@ fun NobelDetailScreen(
                     }
                 }
 
-                // Заголовок лауреатов
                 item {
                     Text(
-                        text = "Лауреаты",
+                        text = "👥 Лауреаты",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
-                // Список лауреатов
                 items(prize.laureates) { laureate ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -116,8 +138,9 @@ fun NobelDetailScreen(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
+                            // Исправьте на:
                             Text(
-                                text = "Доля: ${laureate.portion}",
+                                text = laureate.portion?.let { "Доля: $it" } ?: "",
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(top = 4.dp)
@@ -149,6 +172,44 @@ fun NobelDetailScreen(
                                     )
                                 }
                             }
+                        }
+                    }
+                }
+
+                // Сообщение о результате действия с избранным
+                if (favoriteState is FavoriteActionState.Success) {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            )
+                        ) {
+                            Text(
+                                text = (favoriteState as FavoriteActionState.Success).message,
+                                modifier = Modifier.padding(12.dp),
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+
+                if (favoriteState is FavoriteActionState.Error) {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            )
+                        ) {
+                            Text(
+                                text = (favoriteState as FavoriteActionState.Error).message,
+                                modifier = Modifier.padding(12.dp),
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.error
+                            )
                         }
                     }
                 }

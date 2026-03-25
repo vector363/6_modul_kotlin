@@ -80,9 +80,14 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
     implementation("io.ktor:ktor-client-logging:2.3.12")
 
-
     // Kotlinx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // Bluetooth
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+    // Accompanist Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
 
     implementation(libs.androidx.core.ktx)

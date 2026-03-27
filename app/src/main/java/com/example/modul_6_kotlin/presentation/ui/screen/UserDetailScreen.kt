@@ -69,7 +69,6 @@ fun UserDetailScreen(
                             .padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Аватар
                         AsyncImage(
                             model = user.image,
                             contentDescription = "Avatar of ${user.fullName}",
@@ -81,7 +80,6 @@ fun UserDetailScreen(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // Информация
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(

@@ -30,7 +30,6 @@ class AuthRepositoryImpl(
             val response = apiService.login(request)
             val user = UserMapper.mapToDomain(response)
 
-            // Сохраняем токен
             saveToken(response.accessToken)
             cachedToken = response.accessToken
 

@@ -39,7 +39,6 @@ fun UserItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Аватар пользователя
             AsyncImage(
                 model = user.image,
                 contentDescription = "Avatar of ${user.fullName}",
@@ -51,7 +50,6 @@ fun UserItem(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Информация о пользователе
             Column(
                 modifier = Modifier.weight(1f)
             ) {

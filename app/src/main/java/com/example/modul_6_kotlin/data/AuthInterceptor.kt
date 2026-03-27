@@ -8,7 +8,6 @@ class AuthInterceptor(private val token: String?) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        // Если есть токен, добавляем заголовок Authorization
         val request = if (token != null) {
             originalRequest.newBuilder()
                 .header("Authorization", "Bearer $token")

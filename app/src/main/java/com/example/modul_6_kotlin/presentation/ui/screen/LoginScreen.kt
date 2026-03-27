@@ -68,7 +68,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Поле ввода логина
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
@@ -81,7 +80,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Поле ввода пароля
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -110,7 +108,6 @@ fun LoginScreen(
                         isError = uiState is LoginUiState.Error
                     )
 
-                    // Сообщение об ошибке
                     if (uiState is LoginUiState.Error) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -122,7 +119,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Кнопка входа
                     Button(
                         onClick = { viewModel.login(username, password) },
                         modifier = Modifier.fillMaxWidth(),

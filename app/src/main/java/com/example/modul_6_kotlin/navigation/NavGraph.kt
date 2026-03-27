@@ -32,14 +32,12 @@ fun NavGraph() {
     val application = context.applicationContext as AuthApplication
     val tokenManager = application.tokenManager
 
-    // Создаем репозиторий и use cases
     val repository = AuthRepositoryImpl(tokenManager)
     val loginUseCase = LoginUseCase(repository)
     val getUsersUseCase = GetUsersUseCase(repository)
     val getUserDetailUseCase = GetUserDetailUseCase(repository)
     val logoutUseCase = LogoutUseCase(repository)
 
-    // Проверяем, авторизован ли пользователь
     val isAuthenticated = remember { repository.isAuthenticated() }
     val startDestination = if (isAuthenticated) "users_list" else "login"
 
@@ -48,7 +46,6 @@ fun NavGraph() {
         navController = navController,
         startDestination = startDestination
     ) {
-        // Экран логина
         composable("login") {
             val viewModel: LoginViewModel = viewModel(
                 factory = LoginViewModelFactory(loginUseCase)
@@ -63,7 +60,6 @@ fun NavGraph() {
             )
         }
 
-        // Экран списка пользователей
         composable("users_list") {
             val viewModel: UsersViewModel = viewModel(
                 factory = UsersViewModelFactory(
@@ -85,7 +81,6 @@ fun NavGraph() {
             )
         }
 
-        // Экран детализации пользователя
         composable(
             route = "user_detail/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })

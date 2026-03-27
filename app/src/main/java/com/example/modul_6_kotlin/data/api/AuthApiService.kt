@@ -18,5 +18,5 @@ interface AuthApiService {
     @GET("users/{id}")
     suspend fun getUserById(
         @Path("id") id: Int
-    ): LoginResponseDto  // структура та же, что и при логине
+    ): LoginResponseDto
 }

@@ -10,7 +10,6 @@ import retrofit2.http.*
 
 interface NobelApiService {
 
-    // Авторизация
     @POST("auth/login")
     suspend fun login(
         @Body request: LoginRequestDto
@@ -21,7 +20,6 @@ interface NobelApiService {
         @Body request: RegisterRequestDto
     ): LoginResponseDto
 
-    // Премии (защищенные)
     @GET("prizes")
     suspend fun getAllPrizes(): List<NobelPrizeDto>
 
@@ -37,7 +35,6 @@ interface NobelApiService {
         @Path("category") category: String
     ): List<LaureateDto>
 
-    // Избранное
     @GET("users/me/prizes")
     suspend fun getUserFavorites(): List<NobelPrizeDto>
 

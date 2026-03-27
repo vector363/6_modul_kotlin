@@ -21,7 +21,7 @@ object NobelPrizeMapper {
             id = dto.id,
             fullName = dto.fullName,
             motivation = dto.motivation,
-            portion = dto.portion,  // теперь может быть null
+            portion = dto.portion,
             birthDate = dto.birthDate,
             birthPlace = dto.birthPlace
         )

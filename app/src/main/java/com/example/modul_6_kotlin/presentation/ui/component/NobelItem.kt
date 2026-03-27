@@ -46,7 +46,6 @@ fun NobelItem(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // Год и категория
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -66,7 +65,6 @@ fun NobelItem(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Имена лауреатов
                 prize.laureates.take(2).forEach { laureate ->
                     Text(
                         text = laureate.fullName,
@@ -87,7 +85,6 @@ fun NobelItem(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Мотивация (первые 100 символов)
                 prize.laureates.firstOrNull()?.motivation?.let { motivation ->
                     Text(
                         text = motivation.take(100) + if (motivation.length > 100) "..." else "",
@@ -99,7 +96,6 @@ fun NobelItem(
                 }
             }
 
-            // Иконка избранного
             Icon(
                 imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = if (isFavorite) "В избранном" else "Добавить в избранное",

@@ -138,7 +138,6 @@ fun NobelDetailScreen(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
-                            // Исправьте на:
                             Text(
                                 text = laureate.portion?.let { "Доля: $it" } ?: "",
                                 fontSize = 12.sp,
@@ -176,7 +175,6 @@ fun NobelDetailScreen(
                     }
                 }
 
-                // Сообщение о результате действия с избранным
                 if (favoriteState is FavoriteActionState.Success) {
                     item {
                         Card(

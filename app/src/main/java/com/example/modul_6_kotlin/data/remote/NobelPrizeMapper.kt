@@ -16,7 +16,6 @@ object NobelPrizeMapper {
     }
 
     fun mapLaureateToDomain(dto: LaureateDto): Laureate {
-        // Получаем имя (приоритет: fullName, knownName, orgName)
         val name = when {
             dto.fullName?.en != null -> dto.fullName.en
             dto.knownName?.en != null -> dto.knownName.en
@@ -24,10 +23,8 @@ object NobelPrizeMapper {
             else -> "Unknown"
         }
 
-        // Получаем мотивацию
         val motivation = dto.motivation?.en ?: "Нет описания"
 
-        // Формируем место рождения
         val birthPlace = dto.birth?.place?.let {
             listOfNotNull(it.city, it.country).joinToString(", ")
         } ?: "Не указано"

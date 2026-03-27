@@ -22,7 +22,6 @@ class NobelViewModel(
     private val _uiState = MutableStateFlow<NobelUiState>(NobelUiState.Loading)
     val uiState: StateFlow<NobelUiState> = _uiState.asStateFlow()
 
-    // Список доступных категорий для фильтра
     val categories = listOf(
         "chemistry", "physics", "medicine", "literature", "peace", "economics"
     )

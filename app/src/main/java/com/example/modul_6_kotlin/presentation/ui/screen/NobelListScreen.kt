@@ -18,7 +18,7 @@ import com.example.modul_6_kotlin.presentation.ui.component.NobelItem
 import com.example.modul_6_kotlin.presentation.viewmodel.NobelUiState
 import com.example.modul_6_kotlin.presentation.viewmodel.NobelViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)  // ← добавить эту аннотацию
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NobelListScreen(
     viewModel: NobelViewModel,
@@ -34,14 +34,12 @@ fun NobelListScreen(
             TopAppBar(
                 title = { Text("Нобелевские лауреаты") },
                 actions = {
-                    // Кнопка фильтрации
                     IconButton(onClick = { showFilterDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Фильтр"
                         )
                     }
-                    // Кнопка обновления
                     IconButton(onClick = { viewModel.loadPrizes() }) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
@@ -76,7 +74,7 @@ fun NobelListScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "🏆 Нет данных",
+                                text = "Нет данных",
                                 fontSize = 20.sp,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             )
@@ -133,7 +131,6 @@ fun NobelListScreen(
         }
     }
 
-    // Диалог фильтрации
     if (showFilterDialog) {
         FilterDialog(
             currentYear = selectedYear,
@@ -156,7 +153,7 @@ fun NobelListScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)  // ← добавить эту аннотацию
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterDialog(
     currentYear: String?,
@@ -186,7 +183,6 @@ fun FilterDialog(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Фильтр по году
                 ExposedDropdownMenuBox(
                     expanded = yearExpanded,
                     onExpandedChange = { yearExpanded = it }
@@ -223,7 +219,6 @@ fun FilterDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Фильтр по категории
                 ExposedDropdownMenuBox(
                     expanded = categoryExpanded,
                     onExpandedChange = { categoryExpanded = it }

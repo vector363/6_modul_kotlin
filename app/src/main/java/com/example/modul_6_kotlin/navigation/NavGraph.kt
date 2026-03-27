@@ -18,7 +18,6 @@ import com.example.modul_6_kotlin.presentation.viewmodel.PhotoViewModelFactory
 fun NavGraph(){
     val navController = rememberNavController()
 
-    // Создаем UseCase
     val repository = PhotoRepositoryImpl()
     val getPhotosUseCase = GetPhotosUseCase(repository)
 
@@ -40,7 +39,7 @@ fun NavGraph(){
         }
         composable("photo_detail/{photoId}") { backStackEntry ->
             val photoId = backStackEntry.arguments?.getString("photoId") ?: ""
-            // Получаем фото из ViewModel
+
             val photo = viewModel.uiState.value.let { state ->
                 if (state is PhotoUiState.Success) {
                     state.photos.find { it.id == photoId }
@@ -48,7 +47,7 @@ fun NavGraph(){
             }
             PhotoDetailScreen(
                 photo = photo,
-                viewModel = viewModel,  // ← это было пропущено
+                viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
         }

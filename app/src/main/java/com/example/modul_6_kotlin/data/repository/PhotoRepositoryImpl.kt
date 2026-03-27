@@ -7,21 +7,15 @@ import com.example.modul_6_kotlin.domain.repository.PhotoRepository
 import java.io.IOException
 
 class PhotoRepositoryImpl : PhotoRepository {
-
-    override suspend fun getPhotos(page: Int, limit: Int): Result<List<Photo>> {
+    override suspend fun getPhotos(limit: Int): Result<List<Photo>> {
         return try {
-            // Запрос к API
-            val dtos = RetrofitClient.apiService.getPhotos(page, limit)
-
-            // Преобразование DTO → Domain Model
+            val dtos = RetrofitClient.apiService.getPhotos(limit)
             val photos = PhotoMapper.mapToDomainList(dtos)
 
             Result.success(photos)
         } catch (e: IOException) {
-            // Ошибка сети (нет интернета, таймаут и т.д.)
             Result.failure(Exception("Ошибка сети: ${e.message}"))
         } catch (e: Exception) {
-            // Другие ошибки (неправильный ответ сервера и т.д.)
             Result.failure(Exception("Ошибка загрузки: ${e.message}"))
         }
     }

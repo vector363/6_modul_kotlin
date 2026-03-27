@@ -61,7 +61,6 @@ fun PhotoDetailScreen(
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
-                // Большое фото
                 AsyncImage(
                     model = photo.largeUrl,
                     contentDescription = "Photo by ${photo.author}",
@@ -74,7 +73,6 @@ fun PhotoDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Информация о фото
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -104,7 +102,6 @@ fun PhotoDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Кнопка скачивания
                 Button(
                     onClick = { viewModel.downloadPhoto(context, photo) },
                     modifier = Modifier.fillMaxWidth(),
@@ -129,8 +126,6 @@ fun PhotoDetailScreen(
                         }
                     }
                 }
-
-                // Сообщение о результате
                 when (downloadState) {
                     is DownloadState.Success -> {
                         Spacer(modifier = Modifier.height(8.dp))

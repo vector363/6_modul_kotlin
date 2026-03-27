@@ -69,7 +69,7 @@ fun PhotoListScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "📷 Нет фотографий",
+                                text = "Нет фотографий",
                                 fontSize = 20.sp,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             )

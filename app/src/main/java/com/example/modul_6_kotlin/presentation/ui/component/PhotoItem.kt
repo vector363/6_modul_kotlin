@@ -25,7 +25,7 @@ fun PhotoItem(
             .aspectRatio(1f)
             .clickable(
                 onClick = onClick,
-                indication = null,  // ← отключаем ripple для решения проблемы
+                indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ),
         shape = RoundedCornerShape(12.dp),

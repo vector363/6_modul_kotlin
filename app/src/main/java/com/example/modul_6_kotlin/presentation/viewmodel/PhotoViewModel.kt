@@ -28,12 +28,11 @@ sealed class DownloadState {
 class PhotoViewModel(
     private val getPhotosUseCase: GetPhotosUseCase
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow<PhotoUiState>(PhotoUiState.Loading)
     val uiState: StateFlow<PhotoUiState> = _uiState.asStateFlow()
-
     private val _downloadState = MutableStateFlow<DownloadState>(DownloadState.Idle)
     val downloadState: StateFlow<DownloadState> = _downloadState.asStateFlow()
+
 
     private val downloadUseCase = DownloadPhotoUseCase()
 
@@ -45,7 +44,7 @@ class PhotoViewModel(
         viewModelScope.launch {
             _uiState.value = PhotoUiState.Loading
 
-            val result = getPhotosUseCase(page = 1, limit = 20)
+            val result = getPhotosUseCase(limit = 40)
 
             _uiState.value = when {
                 result.isSuccess -> {
@@ -80,17 +79,9 @@ class PhotoViewModel(
                 }
             }
 
-            // Сбрасываем состояние через 3 секунды
             kotlinx.coroutines.delay(3000)
             _downloadState.value = DownloadState.Idle
         }
     }
 
-    fun refresh() {
-        loadPhotos()
-    }
-
-    fun clearDownloadState() {
-        _downloadState.value = DownloadState.Idle
-    }
 }

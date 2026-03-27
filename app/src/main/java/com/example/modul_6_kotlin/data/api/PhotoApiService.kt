@@ -8,7 +8,6 @@ interface PhotoApiService {
 
     @GET("v2/list")
     suspend fun getPhotos(
-        @Query("page") page: Int = 1,
-        @Query("limit") limit: Int = 10
+        @Query("limit") limit: Int
     ): List<PhotoDto>
 }

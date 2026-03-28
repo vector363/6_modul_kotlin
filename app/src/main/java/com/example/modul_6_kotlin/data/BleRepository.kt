@@ -65,7 +65,6 @@ class BleRepository(context: Context) {
         if (!adapter.isEnabled) return
         val scanner = adapter.bluetoothLeScanner ?: return
 
-        // ✅ Очищаем список устройств
         _devices.value = emptyList()
 
         val settings = ScanSettings.Builder()
@@ -133,7 +132,6 @@ class BleRepository(context: Context) {
                     return
                 }
 
-                // Включаем уведомления
                 gatt.setCharacteristicNotification(characteristic, true)
 
                 val descriptor = characteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID)
@@ -148,7 +146,6 @@ class BleRepository(context: Context) {
                     val readSuccess = gatt.readCharacteristic(characteristic)
                     println("Первое чтение после задержки: $readSuccess")
 
-                    // Цикл чтения каждые 5 секунд
                     while (true) {
                         delay(5000)
                         val cycleSuccess = gatt.readCharacteristic(characteristic)
@@ -197,7 +194,6 @@ class BleRepository(context: Context) {
             println("Получено значение (hex): ${value.joinToString(" ") { "%02x".format(it) }}")
             println("Длина: ${value.size} байт")
 
-            // Парсинг Heart Rate Measurement по спецификации BLE
             val flags = value[0].toInt() and 0xFF
             val is16Bit = (flags and 0x01) == 0x01
 
@@ -209,8 +205,6 @@ class BleRepository(context: Context) {
                 println("Недостаточно данных для парсинга пульса")
                 return
             }
-
-            println("Пульс: $heartRate bpm")
             _heartRate.value = heartRate
         }
     }

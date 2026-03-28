@@ -96,7 +96,6 @@ fun BleScannerScreen() {
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
                 ) {
-                    // Выносим clickable на Column, а не на Card
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
